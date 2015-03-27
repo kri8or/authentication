@@ -1,0 +1,20 @@
+block control
+	include control 
+//- this gets text from the variable in config file...
+
+doctype 
+html(lang="en")
+	head
+		title
+			block titulo
+	
+		block meta
+			//- valores por default (caso o block meta nao seja utilizado...)
+			meta( charset="UTF-8")
+			meta( http-equiv="X-UA-Compatible",content="ID=edge")
+			meta( name="viewport", content="width=device-width, initial-scale=1.0")
+		block css
+			+cssLinks(cssLinks)
+	block body
+		body
+			block content

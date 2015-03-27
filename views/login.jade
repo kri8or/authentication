@@ -1,0 +1,13 @@
+extends wraper
+
+block titulo
+	| Login
+
+block content
+	if (!isLogged)
+		h1 #{title} - Login Page
+	else
+		h1 #{title}, #{username}!! - Login Page
+	if (!isLogged)
+		block loginForm
+			+loginForm()

@@ -1,0 +1,16 @@
+extends wraper
+
+block titulo
+	| #{title}
+
+block content
+	if (!isLogged)
+		h1 #{title}
+	else
+		h1 #{title}, #{username}!!
+		form(action="/logout")
+			input(type='submit'  value='Logout')
+	if (!isLogged)
+		block loginForm
+			+loginForm() 
+

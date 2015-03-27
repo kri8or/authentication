@@ -1,0 +1,31 @@
+- var isLogged = isAuthenticated;
+
+- var name;
+- (user)? name = user.username : ""; 
+
+- var username = name;
+
+- var title = "This is Passport";
+
+
+
+//- all css that we want will be defined here in this array
+- var cssLinks = ["//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"];
+
+//- MIXIN to create CSS
+mixin cssLinks(arrayWithCssLinks)
+	each item in arrayWithCssLinks
+		link(href=item, rel="stylesheet", type="text/css")
+
+
+mixin loginForm()
+	form(name="login" method="post" action="/login")
+				ul
+					li
+						label Username 
+						input(type="text" name="username" placeholder="yourname@email.com")
+					li
+						label Password 
+						input(type="password" name="password")
+					li
+						input(type="submit" value="Login")
