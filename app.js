@@ -36,7 +36,7 @@ passport.use(new passportLocal.Strategy(function(username, password, done){ //do
 	if (usersDB.loginUser(username,password)){
 		done(null, userLogin);
 	}else{
-		done(null,null);
+		done(null,null);  //check http://passportjs.org/guide/configure/
 	}
 
 
@@ -61,6 +61,7 @@ passport.use(new passportLocal.Strategy(function(username, password, done){ //do
 }));
 
 app.use('/', routes);
+
 
 passport.serializeUser(function(user, done){
 	done(null,user.id);
