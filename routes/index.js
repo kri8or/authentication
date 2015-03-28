@@ -23,13 +23,13 @@ router.get('/', function (req, res) {
   });
 });
 
-
-router.get('/login2', function (req, res) {
+router.get('/login', function (req, res) {
   req.isAuthenticated() ? res.redirect('/') : res.render('login');
 });
 
+
 //DEFAULT STRAGEGY: sent 401 error if login fails - no redirect possible
-router.post('/login', passport.authenticate('local'), function (req, res) {  // strategy is local, if succedes it'll put a token in the session
+router.post('/login-default', passport.authenticate('local'), function (req, res) {  // strategy is local, if succedes it'll put a token in the session
 																			// subsequent requests will see that token an 
 																			// de-serialize it and put it available in req.user	(line 22)
 																			// to override the default behaviour check 'Custom Callback' in http://passportjs.org/guide/authenticate/
@@ -38,13 +38,10 @@ router.post('/login', passport.authenticate('local'), function (req, res) {  // 
 });
 
 
-
-
-
 //OVERRIDING THE DEFAULT STRATEGY
 //ALSO CHECK http://www.hacksparrow.com/express-js-custom-error-pages-404-and-500.html
 
-router.post('/login2', function(req, res, next) {
+router.post('/login', function(req, res, next) {
   /* look at the 2nd parameter to the below call */
   passport.authenticate('local', function(err, user, info) {
     if (err) { return next(err); }
@@ -61,6 +58,10 @@ router.post('/login2', function(req, res, next) {
 router.get('/logout', function (req,res){
 	req.logout();
 	res.redirect('/');
+});
+
+router.get('/test',function (req,res){
+  res.render('test');
 });
 
 

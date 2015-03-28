@@ -7,10 +7,12 @@
 
 - var title = "This is Passport";
 
+//- /login-default ou /login
+- var estrategia = "/login"
 
 
 //- all css that we want will be defined here in this array
-- var cssLinks = ["//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"];
+- var cssLinks = ["//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css","http://getbootstrap.com/examples/signin/signin.css"];
 
 //- MIXIN to create CSS
 mixin cssLinks(arrayWithCssLinks)
@@ -18,14 +20,10 @@ mixin cssLinks(arrayWithCssLinks)
 		link(href=item, rel="stylesheet", type="text/css")
 
 
-mixin loginForm()
-	form(name="login" method="post" action="/login2")
-				ul
-					li
-						label Username 
-						input(type="text" name="username" placeholder="yourname@email.com")
-					li
-						label Password 
-						input(type="password" name="password")
-					li
-						input(type="submit" value="Login")
+//conforme a estrategia podera ser default (mandar um unauthorized) ou overriden...
+mixin loginForm(estrategia)
+	form(id="login" method="post" action=estrategia).form-signin
+		h2.form-signin-heading Sign in here
+		input(type="text" name="username" id="inputEmail" class="form-control" placeholder="username")
+		input(type="password" name="password" id="inputPassword" class="form-control" placeholder="password")
+		button(type="submit" form="login").btn.btn-lg.btn-primary.btn-block Sign in

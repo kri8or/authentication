@@ -9,8 +9,8 @@ block content
 	else
 		h1 #{title}, #{username}!!
 		form(action="/logout")
-			input(type='submit'  value='Logout')
+			input(type='submit' value='Logout').btn.btn-lg.btn-primary.btn-block
 	if (!isLogged)
 		block loginForm
-			+loginForm() 
+			+loginForm(estrategia) 
 
