@@ -1,0 +1,8 @@
+extends wraper
+
+block titulo
+	| 404 Pagina não existe
+
+block content
+	if (!isLogged)
+		h1 Erro 404, a pagina não existe pah!!

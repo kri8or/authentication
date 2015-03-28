@@ -7,7 +7,7 @@
 
 - var title = "This is Passport";
 
-//- /login-default ou /login
+//-    login-default ou login
 - var estrategia = "/login"
 
 
@@ -20,7 +20,7 @@ mixin cssLinks(arrayWithCssLinks)
 		link(href=item, rel="stylesheet", type="text/css")
 
 
-//conforme a estrategia podera ser default (mandar um unauthorized) ou overriden...
+//-conforme a estrategia podera ser default (mandar um unauthorized) ou overriden...
 mixin loginForm(estrategia)
 	form(id="login" method="post" action=estrategia).form-signin
 		h2.form-signin-heading Sign in here
