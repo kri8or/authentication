@@ -38,6 +38,7 @@ router.use(function(req, res, next) {
 //--------------------
 
 
+
 router.get('/', function (req, res) {
   res.render('index', {
   	isAuthenticated: req.isAuthenticated(), //passport adds this for us (express doesnt have)
@@ -55,9 +56,7 @@ router.get('/login', function (req, res) {
 //DEFAULT STRAGEGY: sent 401 error if login fails - no redirect possible
 router.post('/login-default', passport.authenticate('local'), function (req, res) {  // strategy is local, if succedes it'll put a token in the session
 																			// subsequent requests will see that token an 
-																			// de-serialize it and put it available in req.user	(line 22)
-																			// to override the default behaviour check 'Custom Callback' in http://passportjs.org/guide/authenticate/
-	
+																			// de-serialize it and put it available in req.user
 	res.redirect('/');																		
 });
 
@@ -76,7 +75,21 @@ router.post('/login', function(req, res, next) {
     });
   })(req, res, next);
 });
+
+
+//---------------another way to define the router (more clean)------------------------
+
+router.route('/tone')
+
+  .get(function (req,res){
+  res.send('test');
+});
+
+  .post(function (req,res){
+  res.send('test');
+});
 //----------------------------------------
+
 
 
 router.get('/logout', function (req,res){
