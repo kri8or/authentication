@@ -1,3 +1,8 @@
+
+
+// BASE SETUP
+// ==============================================
+
 var express = require('express');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
@@ -6,24 +11,35 @@ var passport = require('passport');
 var passportLocal = require('passport-local');
 var passportHttp = require('passport-http');
 
-//nossa FAKE BD:
-var usersDB = require('./modules/user');
-
 var app = express();
 
-var routes = require('./routes/index');
+
+//a FAKE BD:
+// ==============================================
+
+var usersDB = require('./modules/user');
+
+
+
+
 
 app.set('view engine', 'jade');
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(cookieParser());
 app.use(expressSession({ 
-	secret: process.env.SESSION_SECRET || 'This is the secret',//secret to digitally sign the cookie
+	secret: process.env.SESSION_SECRET || 'This is the secret', //secret to digitally sign the cookie
 	resave: false,  
 	saveUninitialized: false
  })); 
 
+
+// Passport
+// ==============================================
+
 app.use(passport.initialize());
 app.use(passport.session());
+
+
 
 passport.use(new passportLocal.Strategy(function(username, password, done){ //done is a callback
 	
@@ -55,15 +71,10 @@ passport.use(new passportLocal.Strategy(function(username, password, done){ //do
 
 }));
 
-app.use('/', routes);
 
-// ERROR 404
-app.use(function(req, res, next) {
-  res.status(404).render('404');
-});
+//Serialize and Deserialize users 
+// ==============================================
 
-
-//Serialize and Deserialize
 passport.serializeUser(function(user, done){
 	done(null,user.id);
 });
@@ -73,8 +84,30 @@ passport.deserializeUser(function(id, done){
 	done(null,{id: user.id, username: user.username});
 });
 
+
+// ROUTES
+// ==============================================
+//	a inicialização do passport tem que estar antes das rotas que usam passport (senao erro)
+//  como estão nas linhas 39 e 40 (acima)
+
+var routes = require('./routes/index');
+app.use('/', routes);  
+
+	// rotas definidas a partir de /
+	// se fosse /whatever, cada route seria /whatever/route	
+	// like this we can create several routes for different kinds of functionalities
+
+// Handle ERROR 404
+app.use(function(req, res, next) {
+  res.status(404).render('404');
+});
+
+
+//Start Server
+// ==============================================
+
 var server = app.listen(3000, function () {
   var host = server.address().address;
   var port = server.address().port;
-  console.log('Example app listening at http://%s:%s', host, port)
+  console.log('Davids App listening at http://%s:%s', host, port)
 });

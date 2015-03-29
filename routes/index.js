@@ -1,3 +1,5 @@
+
+
 var express = require('express');
 var passport = require('passport');
 var router = express.Router();
@@ -13,6 +15,26 @@ usersDB.createUser({id:789, username:"ze", password:"ze" });
 usersDB.createUser({id:234, username:"couves", password:"couves" });
 usersDB.createUser({id:458, username:"maria", password:"maria" });
 
+
+//--------------------
+
+// EXAMPLE OF ADDING MIDDLEWARE TO ROUTER
+// We’ll use router.use() to define middleware.
+// If I put it after the definition of one route (example / in line 36) it will only log routes from that up... 
+router.use(function(req, res, next) {
+  console.log('middleware added by David:');
+    
+    // log each request to the console
+    console.log(req.method, req.url+'\n');
+
+    // continue doing what we were doing and go to the route
+    next(); 
+
+    // Keep in mind that you can use route middleware for many things. 
+    // You can use it to check that a user is logged in in the session before 
+    // letting them continue.
+});
+
 //--------------------
 
 
@@ -22,6 +44,8 @@ router.get('/', function (req, res) {
   	user: req.user
   });
 });
+
+
 
 router.get('/login', function (req, res) {
   req.isAuthenticated() ? res.redirect('/') : res.render('login');
@@ -63,6 +87,11 @@ router.get('/logout', function (req,res){
 router.get('/test',function (req,res){
   res.render('test');
 });
+
+
+
+
+
 
 
 module.exports = router;
