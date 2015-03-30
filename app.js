@@ -10,6 +10,7 @@ var expressSession = require('express-session');
 var passport = require('passport');
 var passportLocal = require('passport-local');
 var passportHttp = require('passport-http');
+var passportFB = require('passport-facebook').Strategy;
 
 var app = express();
 
@@ -33,7 +34,7 @@ app.use(expressSession({
  })); 
 
 
-// Passport
+// Passport local
 // ==============================================
 
 app.use(passport.initialize());
@@ -70,6 +71,32 @@ passport.use(new passportLocal.Strategy(function(username, password, done){ //do
 	// //pbkdf2 (standard to securely salt password...)
 
 }));
+
+
+// Passport FACEBOOK
+// ==============================================
+// In order to use Facebook authentication, you must first create an app at https://developers.facebook.com/. 
+// When created, an app is assigned an App ID and App Secret. Your application must also implement a redirect URL, 
+// to which Facebook will redirect users after they have approved access for your application.
+
+var FACEBOOK_APP_ID = 343195729218869;
+var FACEBOOK_APP_SECRET = 'd6e3830c44a08bc8b57032048d94dd65';
+
+passport.use(new passportFB({
+	clientID: FACEBOOK_APP_ID,
+    clientSecret: FACEBOOK_APP_SECRET,
+    callbackURL: "http://www.example.com/auth/facebook/callback"
+	},
+  	function(accessToken, refreshToken, profile, done) {
+	
+	var userLogin = usersDB.loginUser(username,password); //null = insucesso
+	if (usersDB.loginUser(username,password)){
+		done(null, userLogin);
+	}else{
+		done(null,null);  //check http://passportjs.org/guide/configure/
+	}
+}));
+
 
 
 //Serialize and Deserialize users 

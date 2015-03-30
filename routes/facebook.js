@@ -3,6 +3,8 @@ var passport = require('passport');
 var fbRouter = express.Router();
 
 
+fbRouter.get('/facebook', passport.authenticate('facebook'));
+
 fbRouter.get('/', function (req, res) {
   res.render('index', {
   	isAuthenticated: req.isAuthenticated(), //passport adds this for us (express doesnt have)
