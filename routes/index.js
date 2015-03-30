@@ -1,5 +1,3 @@
-
-
 var express = require('express');
 var passport = require('passport');
 var router = express.Router();
@@ -100,11 +98,6 @@ router.get('/logout', function (req,res){
 router.get('/test',function (req,res){
   res.render('test');
 });
-
-
-
-
-
 
 
 module.exports = router;

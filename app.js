@@ -21,8 +21,8 @@ var usersDB = require('./modules/user');
 
 
 
-
-
+// View Engine and Express Session and Cookie configuration
+// ==============================================
 app.set('view engine', 'jade');
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(cookieParser());
@@ -89,6 +89,9 @@ passport.deserializeUser(function(id, done){
 // ==============================================
 //	a inicialização do passport tem que estar antes das rotas que usam passport (senao erro)
 //  como estão nas linhas 39 e 40 (acima)
+
+var fbRoutes = require('./routes/facebook');
+app.use('/fb', routes);  
 
 var routes = require('./routes/index');
 app.use('/', routes);  
