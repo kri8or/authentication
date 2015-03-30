@@ -91,7 +91,7 @@ passport.deserializeUser(function(id, done){
 //  como estão nas linhas 39 e 40 (acima)
 
 var fbRoutes = require('./routes/facebook');
-app.use('/fb', routes);  
+app.use('/fb', fbRoutes);  
 
 var routes = require('./routes/index');
 app.use('/', routes);  

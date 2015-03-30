@@ -81,7 +81,7 @@ router.route('/tone')
 
   .get(function (req,res){
   res.send('test');
-});
+})
 
   .post(function (req,res){
   res.send('test');
