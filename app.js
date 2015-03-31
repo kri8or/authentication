@@ -85,7 +85,7 @@ var FACEBOOK_APP_SECRET = 'd6e3830c44a08bc8b57032048d94dd65';
 passport.use(new passportFB({
 	clientID: FACEBOOK_APP_ID,
     clientSecret: FACEBOOK_APP_SECRET,
-    callbackURL: "https://quemsou.eu/fb/callback"
+    callbackURL: "http://localhost/fb/callback"
 	},
   	function(accessToken, refreshToken, profile, done) {
 	
