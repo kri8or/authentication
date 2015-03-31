@@ -85,11 +85,33 @@ var FACEBOOK_APP_SECRET = 'd6e3830c44a08bc8b57032048d94dd65';
 passport.use(new passportFB({
 	clientID: FACEBOOK_APP_ID,
     clientSecret: FACEBOOK_APP_SECRET,
-    callbackURL: "http://www.example.com/auth/facebook/callback"
+    callbackURL: "https://quemsou.eu/fb/callback"
 	},
   	function(accessToken, refreshToken, profile, done) {
 	
+	//need to make the create/exists user Function...
+
+  // function(accessToken, refreshToken, profile, done) {
+  //               User.findOrCreate(
+  //                   { facebookId: profile.id },
+  //                   function (err, result) {
+  //                       if(result) {
+  //                           result.access_token = accessToken;
+  //                           result.save(function(err, doc) {
+  //                               done(err, doc);
+  //                           });
+  //                       } else {
+  //                           done(err, result);
+  //                       }
+  //                   }
+  //               );
+  //           }
+
+
 	var userLogin = usersDB.loginUser(username,password); //null = insucesso
+
+	done(null,userTest);
+
 	if (usersDB.loginUser(username,password)){
 		done(null, userLogin);
 	}else{
@@ -107,6 +129,7 @@ passport.serializeUser(function(user, done){
 });
 
 passport.deserializeUser(function(id, done){
+	console.log('aaaaaaaaaaaaaaaa  '+id);
 	var user = usersDB.findUser(id);
 	done(null,{id: user.id, username: user.username});
 });
