@@ -16,8 +16,8 @@ fbRouter.get('/callback',
 
 fbRouter.get('/', function (req, res) {
   res.render('index', {
-  	isAuthenticated: req.isAuthenticated(), //passport adds this for us (express doesnt have)
-  	user: req.user
+    isAuthenticated: req.isAuthenticated(), //passport adds this for us (express doesnt have)
+    user: req.user
   });
 });
 
@@ -29,8 +29,8 @@ fbRouter.get('/login', function (req, res) {
 
 
 fbRouter.get('/logout', function (req,res){
-	req.logout();
-	res.redirect('/');
+  req.logout();
+  res.redirect('/');
 });
 
 
