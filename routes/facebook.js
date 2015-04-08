@@ -3,9 +3,9 @@ var passport = require('passport');
 var fbRouter = express.Router();
 
 
-fbRouter.get('/facebook', passport.authenticate('facebook'));
+fbRouter.get('/facebook', passport.authenticate('facebook',{ scope: 'email' }));
 
-fbRouter.get('/callback',
+fbRouter.get('/auth',
   passport.authenticate('facebook', { failureRedirect: '/login' }),
   function(req, res) {
     // Successful authentication, redirect home.
@@ -16,22 +16,11 @@ fbRouter.get('/callback',
 
 fbRouter.get('/', function (req, res) {
   res.render('index', {
-    isAuthenticated: req.isAuthenticated(), //passport adds this for us (express doesnt have)
-    user: req.user
+  	isAuthenticated: req.isAuthenticated(), //passport adds this for us (express doesnt have)
+  	user: userTest
   });
 });
 
-
-
-fbRouter.get('/login', function (req, res) {
-  req.isAuthenticated() ? res.redirect('/') : res.render('login');
-});
-
-
-fbRouter.get('/logout', function (req,res){
-  req.logout();
-  res.redirect('/');
-});
 
 
 module.exports = fbRouter;

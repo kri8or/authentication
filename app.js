@@ -15,10 +15,38 @@ var passportFB = require('passport-facebook').Strategy;
 var app = express();
 
 
+
 //a FAKE BD:
 // ==============================================
 
-var usersDB = require('./modules/user');
+//var usersDB = require('./modules/user');
+
+//a REAL BD:
+// ==============================================
+
+var usersDB = require('./modules/DB');
+
+
+
+
+
+//Serialize and Deserialize users 
+// ==============================================
+
+// Passport session setup.
+//   To support persistent login sessions, Passport needs to be able to
+//   serialize users into and deserialize users out of the session.  Typically,
+//   this will be as simple as storing the user ID when serializing, and finding
+//   the user by ID when deserializing.  However, since this example does not
+//   have a database of user records, the complete Facebook profile is serialized
+//   and deserialized.
+passport.serializeUser(function(user, done) {
+	done(null, user);
+});
+
+passport.deserializeUser(function(obj, done) {
+	done(null, obj);
+});
 
 
 
@@ -31,7 +59,7 @@ app.use(expressSession({
 	secret: process.env.SESSION_SECRET || 'This is the secret', //secret to digitally sign the cookie
 	resave: false,  
 	saveUninitialized: false
- })); 
+})); 
 
 
 // Passport local
@@ -44,12 +72,12 @@ app.use(passport.session());
 
 passport.use(new passportLocal.Strategy(function(username, password, done){ //done is a callback
 	
-	var userLogin = usersDB.loginUser(username,password); //null = insucesso
-	if (usersDB.loginUser(username,password)){
-		done(null, userLogin);
-	}else{
-		done(null,null);  //check http://passportjs.org/guide/configure/
-	}
+	var userLogin = usersDB.loginUser(username,password,function(resUser){
+		done(null, resUser);
+	}); //null = insucesso
+	
+	//	done(null,null);  //check http://passportjs.org/guide/configure/
+	
 
 
 	// //pretending this is a real DB - user will enter with user = pass
@@ -78,62 +106,28 @@ passport.use(new passportLocal.Strategy(function(username, password, done){ //do
 // In order to use Facebook authentication, you must first create an app at https://developers.facebook.com/. 
 // When created, an app is assigned an App ID and App Secret. Your application must also implement a redirect URL, 
 // to which Facebook will redirect users after they have approved access for your application.
-var userTest = null;
+
 var FACEBOOK_APP_ID = 343195729218869;
 var FACEBOOK_APP_SECRET = 'd6e3830c44a08bc8b57032048d94dd65';
 
 passport.use(new passportFB({
 	clientID: FACEBOOK_APP_ID,
-    clientSecret: FACEBOOK_APP_SECRET,
-    callbackURL: "https://quemsou.eu/fb/callback/"
-	},
-  	function(accessToken, refreshToken, profile, done) {
-	
-	//need to make the create/exists user Function...
+	clientSecret: FACEBOOK_APP_SECRET,
+	callbackURL: "https://quemsou.eu/fb/auth/"
+},
+function(accessToken, refreshToken, profile, done) {
 
-  // function(accessToken, refreshToken, profile, done) {
-  //               User.findOrCreate(
-  //                   { facebookId: profile.id },
-  //                   function (err, result) {
-  //                       if(result) {
-  //                           result.access_token = accessToken;
-  //                           result.save(function(err, doc) {
-  //                               done(err, doc);
-  //                           });
-  //                       } else {
-  //                           done(err, result);
-  //                       }
-  //                   }
-  //               );
-  //           }
+	//check (accessToken, refreshToken)
 
-
-	//var userLogin = usersDB.loginUser(username,password); //null = insucesso
-	userTest = {'facebookId':profile.id, 'facebookProfile':profile.displayName }; // profile properties http://passportjs.org/guide/profile/
-
-	done(null,userTest);
-
+  	usersDB.findOrCreateWithFB(
+  		profile.id,
+  		profile.displayName,
+  		profile.emails,
+  		function(resUser){
+   		done(null,resUser);
+  	});
+	// profile properties http://passportjs.org/guide/profile/
 }));
-
-
-
-//Serialize and Deserialize users 
-// ==============================================
-
-passport.serializeUser(function(user, done){
-	done(null,user.facebookId);
-});
-
-passport.deserializeUser(function(id, done){
-	// working
-	// var user = usersDB.findUser(id);
-	// done(null,{id: user.id, username: user.username});
-
-	//faking for fb
-	var user =userTest;
-	console.log('here--------------:'+user.facebookId+'  '+user.facebookProfile);  
-	done(null,{id: user.facebookId});
-});
 
 
 // ROUTES
@@ -151,17 +145,17 @@ app.use('/', routes);
 	// se fosse /whatever, cada route seria /whatever/route	
 	// like this we can create several routes for different kinds of functionalities
 
-// Handle ERROR 404
+// Handle ERROR 404 - ATENCAO neste momento não esta a funcar...meter dentro dos routes...
+// se meter dentro de / of /fb da erro 404
 app.use(function(req, res, next) {
-  res.status(404).render('404');
+	res.status(404).render('404');
 });
-
 
 //Start Server
 // ==============================================
 
 var server = app.listen(3000, function () {
-  var host = server.address().address;
-  var port = server.address().port;
-  console.log('Davids App listening at http://%s:%s', host, port)
+	var host = server.address().address;
+	var port = server.address().port;
+	console.log('Davids App listening at http://%s:%s', host, port)
 });
