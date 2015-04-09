@@ -1,9 +1,17 @@
 - var isLogged = isAuthenticated;
 
-- var name;
-- (user)? name = user.username : name = ""; 
+- var username, facebookId, provider,name,familyName,givenName,middleName,emails;
+- if (user){
+-	user.username ? username = user.username : username =  '';
+-   user.email ? email = user.email : email =  '';
+	-	if (user.facebook){
+	-	user.facebook.fbId ? facebookId = user.facebook.fbId : facebookId = '';
+	-	user.facebook.fbUsername ? fbUsername = user.facebook.fbUsername : fbUsername = '';
+	-	user.facebook.fbEmail ? fbEmail = user.facebook.fbEmail : fbEmail = '';
+- 	}
+-}	  
 
-- var username = name;
+
 
 - var title = "This is Passport";
 
@@ -27,3 +35,14 @@ mixin loginForm(estrategia)
 		input(type="text" name="username" id="inputEmail" class="form-control" placeholder="username")
 		input(type="password" name="password" id="inputPassword" class="form-control" placeholder="password")
 		button(type="submit" form="login").btn.btn-lg.btn-primary.btn-block Sign in
+		a(href="/fb/facebook").btn.btn-lg.btn-primary.btn-block Sign in with Facebook
+		br
+	form(id="register" method="post" action="/register").form-signin
+		input(type="text" name="username" id="inputEmail" class="form-control" placeholder="username")
+		input(type="password" name="password" id="inputPassword" class="form-control" placeholder="password")
+		button(type="submit" form="register").btn.btn-lg.btn-danger.btn-block Register new Account
+
+
+
+
+

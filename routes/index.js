@@ -5,16 +5,21 @@ var router = express.Router();
 
 //--------------------
 
-var usersDB = require('../modules/user');
+// var usersDB = require('../modules/user');
 
-usersDB.createUser({id:123, username:"tone", password:"tone" });
-usersDB.createUser({id:456, username:"quim", password:"quim" });
-usersDB.createUser({id:789, username:"ze", password:"ze" });
-usersDB.createUser({id:234, username:"couves", password:"couves" });
-usersDB.createUser({id:458, username:"maria", password:"maria" });
 
+// usersDB.createUser({id:123, username:"tone", password:"tone" });
+// usersDB.createUser({id:456, username:"quim", password:"quim" });
+// usersDB.createUser({id:789, username:"ze", password:"ze" });
+// usersDB.createUser({id:234, username:"couves", password:"couves" });
+// usersDB.createUser({id:458, username:"maria", password:"maria" });
 
 //--------------------
+
+
+var usersDB = require('../modules/DB');
+
+
 
 // EXAMPLE OF ADDING MIDDLEWARE TO ROUTER
 // We’ll use router.use() to define middleware.
@@ -40,7 +45,7 @@ router.use(function(req, res, next) {
 router.get('/', function (req, res) {
   res.render('index', {
   	isAuthenticated: req.isAuthenticated(), //passport adds this for us (express doesnt have)
-  	user: req.user
+  	user: req.user,
   });
 });
 
@@ -73,6 +78,61 @@ router.post('/login', function(req, res, next) {
     });
   })(req, res, next);
 });
+
+
+// REgISTER
+
+router.post('/register', function(req, res, next) {
+  usersDB.findOrCreate(req.body.username, req.body.password, function(res){
+    res ? console.log('user creado com sucesso') : console.log('user ja existe')
+  });
+
+
+//    exports.findOrCreate = function (fbId, fbUsername, fbEmail, cb){
+
+
+  return res.redirect('/');
+});
+
+
+
+
+// Middleware to certify that the subsequent requests are authenthicated
+router.use(function (req,res,next){
+  if (req.isAuthenticated()) { return next(); }
+  res.redirect('/login')
+});
+
+//subsequent request
+router.get('/david',function (req,res){
+  res.send('...the greatest');
+});
+
+
+//another way:
+
+// Simple route middleware to ensure user is authenticated.
+//   Use this route middleware on any resource that needs to be protected.  If
+//   the request is authenticated (typically via a persistent login session),
+//   the request will proceed.  Otherwise, the user will be redirected to the
+//   login page.
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) { return next(); }
+  res.redirect('/login')
+}
+
+//subsequent request
+router.get('/martins',ensureAuthenticated, function (req,res){
+  res.send('...yes the greatest');
+});
+
+//subsequent request
+router.get('/account',ensureAuthenticated, function (req,res){
+  res.render('account',{
+    user: req.user
+  });
+});
+
 
 
 //---------------another way to define the router (more clean)------------------------

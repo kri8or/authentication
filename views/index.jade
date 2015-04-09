@@ -10,6 +10,7 @@ block content
 		h1 #{title}, #{username}!!
 		form(action="/logout")
 			input(type='submit' value='Logout').btn.btn-lg.btn-primary.btn-block
+		a(href='/account').btn.btn-lg.btn-primary.btn-block Check Account
 	if (!isLogged)
 		block loginForm
 			+loginForm(estrategia) 

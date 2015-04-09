@@ -7,7 +7,7 @@ block content
 	if (!isLogged)
 		h1 #{title} - Login Page
 	else
-		h1 #{title}, #{username}!! - Login Page
+		h1 #{title}, #{name}!! - Login Page
 	if (!isLogged)
 		block loginForm
 			+loginForm(estrategia)
