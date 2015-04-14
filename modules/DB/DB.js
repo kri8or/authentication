@@ -5,7 +5,7 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
 
-//var criptoModule = require('../cripto');
+var criptoModule = require('../cripto');
 
 
 //db.once('open', function (callback) {
@@ -32,6 +32,7 @@ db.on('error', console.error.bind(console, 'connection error:'));
 
 
 		// assign a function to the "methods" object of our usersSchema
+		// edit a property
 		usersSchema.methods.editProperty = function (property, value, cb) {
 	  		this[property] = value;
 	  		return cb(this);
@@ -133,17 +134,22 @@ db.on('error', console.error.bind(console, 'connection error:'));
 
 		//find or create user (when login Normally)
 		exports.findOrCreate = function (username, password, cb){
+
 			var created = false;
 			User.findOne({ username: username }, function (err,user){
 				if (user){
+					console.log('asdasdasdasdasdasd test');
 					return cb(created);  // user ja existe
 				}else{
 					//create user
+					console.log('asdasdasdasdasdasd test 2');
 					var derivedKey = criptoModule.createHashedPassword(password,function(err,res){
+						console.log('asdasdasdasdasdasd test 3');
 						return res;
+
 					});
 
-					console.log('asdasdasdasdasdasd '+derivedKey);
+
 
 					//var newUser = new User({
 					//	username: username,

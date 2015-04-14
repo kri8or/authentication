@@ -20,7 +20,7 @@ var app = express();
 //a REAL BD:
 // ==============================================
 
-var usersDB = require('./modules/db');
+var usersDB = require('./modules/DB');
 
 
 //Serialize and Deserialize users
