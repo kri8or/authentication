@@ -1,5 +1,3 @@
-
-
 // BASE SETUP
 // ==============================================
 
@@ -14,8 +12,6 @@ var passportFB = require('passport-facebook').Strategy;
 
 var app = express();
 
-
-
 //a FAKE BD:
 // ==============================================
 
@@ -24,10 +20,10 @@ var app = express();
 //a REAL BD:
 // ==============================================
 
-var usersDB = require('./modules/DB');
+var usersDB = require('./modules/db');
 
 
-//Serialize and Deserialize users 
+//Serialize and Deserialize users
 // ==============================================
 
 // Passport session setup.
@@ -44,7 +40,6 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(obj, done) {
 	done(null, obj);
 });
-
 
 
 // View Engine and Express Session and Cookie configuration
@@ -64,7 +59,6 @@ app.use(expressSession({
 
 app.use(passport.initialize());
 app.use(passport.session());
-
 
 
 passport.use(new passportLocal.Strategy(function(username, password, done){ //done is a callback

@@ -1,14 +1,21 @@
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/users');
+mongoose.createConnection('mongodb://localhost/users');  // "createConnection" instead of "connect" to connect to already open connection or connect to existing one
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
+
+
+//var criptoModule = require('../cripto');
+
 
 //db.once('open', function (callback) {
   // yay!
 		var usersSchema = mongoose.Schema({
 			username: String, 
-			password: String,
+			password: {
+				derivedKey: String,
+				salt: String
+			},
 			email: String,
 			facebook: {
 				fbId: Number,
@@ -24,19 +31,19 @@ db.on('error', console.error.bind(console, 'connection error:'));
 		  //   ObjectId		  //   Array
 
 
-		// assign a function to the "methods" object of our animalSchema
+		// assign a function to the "methods" object of our usersSchema
 		usersSchema.methods.editProperty = function (property, value, cb) {
 	  		this[property] = value;
 	  		return cb(this);
 		}
 
 
-		// assign a function to the "statics" object of our animalSchema
+		// assign a function to the "statics" object of our usersSchema
 		usersSchema.statics.findByUsername = function (username, cb) {
 		  return this.find({ username: new RegExp(username, 'i') }, cb);
 		};
 
-		// assign a function to the "statics" object of our animalSchema
+		// assign a function to the "statics" object of our usersSchema
 		usersSchema.statics.findByFbId = function (fbId, cb) {
 		  return this.find({  'facebook.fbId': fbId }, cb);
 		};
@@ -45,7 +52,7 @@ db.on('error', console.error.bind(console, 'connection error:'));
 
 		var User = mongoose.model('User', usersSchema); //the User will be the constructor
 
-		var usertest = new User({ username: 'usertest' });
+		//var usertest = new User({ username: 'usertest' });
 		//console.log(usertest) // 'usertest'
 
 
@@ -132,25 +139,34 @@ db.on('error', console.error.bind(console, 'connection error:'));
 					return cb(created);  // user ja existe
 				}else{
 					//create user
-					var newUser = new User({
-						username: username,
-						password: password,
-						email: '',
-						'facebook.fbId': '',
-						'facebook.fbUsername': '',
-						'facebook.fbEmail': ''
-						 });
-
-					newUser.save(function (err) {
-					   if (err) {
-					   		console.error(err);
-					   		return cb(created); //false neste caso
-					   }else{
-					   	created = true;
-					   	return cb(created); //true neste caso
-					   }
-
+					var derivedKey = criptoModule.createHashedPassword(password,function(err,res){
+						return res;
 					});
+
+					console.log('asdasdasdasdasdasd '+derivedKey);
+
+					//var newUser = new User({
+					//	username: username,
+					//	password: {
+					//		derivedKey: ,
+					//		salt:
+					//	},
+					//	email: '',
+					//	'facebook.fbId': '',
+					//	'facebook.fbUsername': '',
+					//	'facebook.fbEmail': ''
+					//	 });
+                    //
+					//newUser.save(function (err) {
+					//   if (err) {
+					//   		console.error(err);
+					//   		return cb(created); //false neste caso
+					//   }else{
+					//   	created = true;
+					//   	return cb(created); //true neste caso
+					//   }
+                    //
+					//});
 				}
 			});
 			

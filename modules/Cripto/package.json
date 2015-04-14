@@ -1,0 +1,11 @@
+{
+  "name": "cripto",
+  "version": "0.0.0",
+  "description": "module to use The Node cripto",
+  "main": "cripto.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
