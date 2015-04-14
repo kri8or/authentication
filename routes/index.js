@@ -45,7 +45,7 @@ router.use(function(req, res, next) {
 router.get('/', function (req, res) {
   res.render('index', {
   	isAuthenticated: req.isAuthenticated(), //passport adds this for us (express doesnt have)
-  	user: req.user,
+  	user: req.user
   });
 });
 
@@ -68,14 +68,17 @@ router.post('/login-default', passport.authenticate('local'), function (req, res
 //ALSO CHECK http://www.hacksparrow.com/express-js-custom-error-pages-404-and-500.html
 
 router.post('/login', function(req, res, next) {
-  /* look at the 2nd parameter to the below call */
-  passport.authenticate('local', function(err, user, info) {
-    if (err) { return next(err); }
-    if (!user) { return res.render('login',{'message':'Essas credenciais nao existem pah!'});}
-    req.logIn(user, function(err) {
+  passport.authenticate('local', function(err, user) {
       if (err) { return next(err); }
-      return res.redirect('/');
-    });
+      if (!user) { return res.render('login',{'message':'Essas credenciais nao existem pah!'});}
+
+      req.logIn(user, function(err) {
+        if (err) {
+          console.log('erro aqui (router post login): '+err);
+          return next(err); }
+        return res.redirect('/');
+      });
+
   })(req, res, next);
 });
 

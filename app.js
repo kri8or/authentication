@@ -62,8 +62,7 @@ app.use(passport.session());
 
 
 passport.use(new passportLocal.Strategy(function(username, password, done){ //done is a callback
-	
-	var userLogin = usersDB.loginUser(username,password,function(resUser){
+	usersDB.loginUser(username,password,function(resUser){
 		done(null, resUser);
 	}); //null = insucesso
 	

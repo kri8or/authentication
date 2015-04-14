@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-mongoose.createConnection('mongodb://localhost/users');  // "createConnection" instead of "connect" to connect to already open connection or connect to existing one
+mongoose.connect('mongodb://localhost/users');  // "createConnection" instead of "connect" to connect to already open connection or connect to existing one
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -132,55 +132,48 @@ var criptoModule = require('../cripto');
 			
 		}
 
-		//find or create user (when login Normally)
-		exports.findOrCreate = function (username, password, cb){
+//find or create user (when login Normally)
+exports.findOrCreate = function (username, password, cb){
+	var created = false;
+	User.findOne({ username: username }, function (err,user){
+		if (user){
+			return cb(created);  // user ja existe
+		}else{
+			//create user
+			criptoModule.createHashedPassword(password,function(err,res){
+				var newUser = new User({
+					username: username,
+					password: {
+						derivedKey: res.derivedKey,
+						salt: res.salt
+					},
+					email: '',
+					'facebook.fbId': '',
+					'facebook.fbUsername': '',
+					'facebook.fbEmail': ''
+				});
 
-			var created = false;
-			User.findOne({ username: username }, function (err,user){
-				if (user){
-					console.log('asdasdasdasdasdasd test');
-					return cb(created);  // user ja existe
-				}else{
-					//create user
-					console.log('asdasdasdasdasdasd test 2');
-					var derivedKey = criptoModule.createHashedPassword(password,function(err,res){
-						console.log('asdasdasdasdasdasd test 3');
-						return res;
+				newUser.save(function (err) {
+					if (err) {
+						console.error(err);
+						return cb(created); //false neste caso
+					}else{
+						created = true;
+						return cb(created); //true neste caso
+					}
 
-					});
-
-
-
-					//var newUser = new User({
-					//	username: username,
-					//	password: {
-					//		derivedKey: ,
-					//		salt:
-					//	},
-					//	email: '',
-					//	'facebook.fbId': '',
-					//	'facebook.fbUsername': '',
-					//	'facebook.fbEmail': ''
-					//	 });
-                    //
-					//newUser.save(function (err) {
-					//   if (err) {
-					//   		console.error(err);
-					//   		return cb(created); //false neste caso
-					//   }else{
-					//   	created = true;
-					//   	return cb(created); //true neste caso
-					//   }
-                    //
-					//});
-				}
+				});
 			});
-			
 		}
-		
+	});
+};
+
 		//check user password to login
 		exports.loginUser = function (username, password, cb){
-			User.findOne({ username: username, password: password }, function (err, user) {
+			User.findOne({ username: username, 'password.derivedKey': password }, function (err, user) {
+				if (err) {
+					console.log('erro aqui (DB loginUser): '+err);
+				}
 				return cb(user);
 			});
 		}
