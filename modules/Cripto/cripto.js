@@ -10,7 +10,7 @@ exports.createHashedPassword = function (plainTextPassword, callback) {
         //crypto.pbkdf2(password, salt, iterations, keylen[, digest], callback)#
         crypto.pbkdf2(plainTextPassword, salt.toString('base64'), ITERATIONS, KEY_LENGTH, function (err, derivedKey) {
         //console.timeEnd('password-hash');
-            return callback(null, {derivedKey: derivedKey.toString('base64'), salt: salt, iterations: ITERATIONS});
+            return callback(null, {derivedKey: derivedKey.toString('base64'), salt: salt.toString('base64'), iterations: ITERATIONS});
         });
     });
 };
