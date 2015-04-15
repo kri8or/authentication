@@ -8,6 +8,7 @@ db.on('error', console.error.bind(console, 'connection error:'));
 var criptoModule = require('../cripto');
 
 
+
 //db.once('open', function (callback) {
   // yay!
 		var usersSchema = mongoose.Schema({
@@ -132,49 +133,66 @@ var criptoModule = require('../cripto');
 			
 		}
 
-//find or create user (when login Normally)
-exports.findOrCreate = function (username, password, cb){
-	var created = false;
-	User.findOne({ username: username }, function (err,user){
-		if (user){
-			return cb(created);  // user ja existe
-		}else{
-			//create user
-			criptoModule.createHashedPassword(password,function(err,res){
-				var newUser = new User({
-					username: username,
-					password: {
-						derivedKey: res.derivedKey,
-						salt: res.salt
-					},
-					email: '',
-					'facebook.fbId': '',
-					'facebook.fbUsername': '',
-					'facebook.fbEmail': ''
-				});
+		//find or create user (when login Normally)
+		exports.findOrCreate = function (username, password, cb){
+			var created = false;
+			User.findOne({ username: username }, function (err,user){
+				if (user){
+					return cb(created);  // user ja existe
+				}else{
+					//create user
+					criptoModule.createHashedPassword(password,function(err,res){
+						var newUser = new User({
+							username: username,
+							password: {
+								derivedKey: res.derivedKey,
+								salt: res.salt
+							},
+							email: '',
+							'facebook.fbId': '',
+							'facebook.fbUsername': '',
+							'facebook.fbEmail': ''
+						});
 
-				newUser.save(function (err) {
-					if (err) {
-						console.error(err);
-						return cb(created); //false neste caso
-					}else{
-						created = true;
-						return cb(created); //true neste caso
-					}
+						newUser.save(function (err) {
+							if (err) {
+								console.error(err);
+								return cb(created); //false neste caso
+							}else{
+								created = true;
+								return cb(created); //true neste caso
+							}
 
-				});
+						});
+					});
+				}
 			});
-		}
-	});
-};
+		};
 
 		//check user password to login
 		exports.loginUser = function (username, password, cb){
-			User.findOne({ username: username, 'password.derivedKey': password }, function (err, user) {
+			User.findOne({ username: username }, function (err, user) {
 				if (err) {
-					console.log('erro aqui (DB loginUser): '+err);
+					// TODO erro
+					console.log('error here man...');
 				}
-				return cb(user);
+
+				if (user){
+					criptoModule.verify(password,user.password.derivedKey,user.password.salt,function(res){ // res true or false
+						if (res){
+							cb(user);
+						}else{
+							cb(null);
+						}
+
+					});
+				}else{
+					cb(null);
+				}
+
+
+
+
 			});
 		}
 
