@@ -11,8 +11,6 @@
 	- 	}
 -}	  
 
-
-
 - var title = "This is Passport";
 
 //-    login-default ou login
@@ -20,12 +18,20 @@
 
 
 //- all css that we want will be defined here in this array
-- var cssLinks = ["//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css","http://getbootstrap.com/examples/signin/signin.css"];
+- var cssLinks = ["//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"]//,"http://getbootstrap.com/examples/signin/signin.css"];
+
+-var jsLinks = ["http://www.tutorialspoint.com/scripts/jquery.min.js","//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"];
 
 //- MIXIN to create CSS
 mixin cssLinks(arrayWithCssLinks)
 	each item in arrayWithCssLinks
 		link(href=item, rel="stylesheet", type="text/css")
+
+//- //- MIXIN to create CSS
+mixin jsLinks(arrayWithJsLinks)
+	each item in arrayWithJsLinks
+		script(src=item)
+
 
 
 //-conforme a estrategia podera ser default (mandar um unauthorized) ou overriden...
@@ -43,6 +49,12 @@ mixin loginForm(estrategia)
 		button(type="submit" form="register").btn.btn-lg.btn-danger.btn-block Register new Account
 
 
+//-type: success info warning danger default
+mixin alert(message,color)
+	div(class="alert alert-#{color} alert-dismissable")
+		button(type="button" class="close" data-dismiss="alert" aria-hidden="true")
+			&times;
+		| #{message}
 
 
 
