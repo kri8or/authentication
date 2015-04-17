@@ -70,7 +70,7 @@ router.post('/login-default', passport.authenticate('local'), function (req, res
 router.post('/login', function(req, res, next) {
   passport.authenticate('local', function(err, user) {
       if (err) { return next(err); }
-      if (!user) { return res.render('login',{'message':'Essas credenciais nao existem pah!'});}
+      if (!user) { return res.render('login',{'message':'Essas credenciais nao existem pah!','type':'danger'});}
 
       req.logIn(user, function(err) {
         if (err) {
@@ -86,15 +86,19 @@ router.post('/login', function(req, res, next) {
 // REgISTER
 
 router.post('/register', function(req, res, next) {
-  usersDB.findOrCreate(req.body.username, req.body.password, function(res){
-    res ? console.log('user creado com sucesso') : console.log('user ja existe')
+  usersDB.findOrCreate(req.body.username, req.body.password, function(result){ //res true - success; false - already exists
+    var message = "",type = "";
+
+    if (result){
+      message ='user creado com sucesso';
+      type='success';}
+    else{
+      message= 'user ja existe';
+      type='danger';
+    }
+
+    return res.render('login',{'message': message, 'type':type});
   });
-
-
-//    exports.findOrCreate = function (fbId, fbUsername, fbEmail, cb){
-
-
-  return res.redirect('/');
 });
 
 

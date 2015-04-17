@@ -4,12 +4,8 @@ block titulo
 	| Login
 
 block content
-	if (!isLogged)
-		h1 #{title} - Login Page
-	else
-		h1 #{title}, #{name}!! - Login Page
-	if (!isLogged)
-		block loginForm
-			+loginForm(estrategia)
-		h3 #{message}
-		+alert(message,"danger")
+	h1 #{title} - Login Page
+	if (message)
+		+alert(message,type) //-type danger warning success etc
+	block loginForm
+		+loginForm(estrategia)
