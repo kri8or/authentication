@@ -65,29 +65,6 @@ passport.use(new passportLocal.Strategy(function(username, password, done){ //do
 	usersDB.loginUser(username,password,function(resUser){
 		done(null, resUser);
 	}); //null = insucesso
-	
-	//	done(null,null);  //check http://passportjs.org/guide/configure/
-	
-
-
-	// //pretending this is a real DB - user will enter with user = pass
-	// if (username === password){
-	// 	done(null,{ id: username, name: username });  	//no error and a user object is returned (success)
-	// 													//the user object can look however we WANT!!
-	// }else{												//were just using this id and name as EXAMPLE
-	// 													//normally we'd get some kind of ID from DB or sth...		
- //    done(null,null); // no error and no user (password is bad)
- //    }
-
-	// done(null,user); 
-	
-	// //done(new Error('ouch!!!')); //some error like, no conecction to DB...
-
-	// //IMPORTANT!!!
-	// //normaly we'd have a DB and we'd salt and hash the passwords
-	// //check /nodejs.org/api/crypto.html
-	// //pbkdf2 (standard to securely salt password...)
-
 }));
 
 

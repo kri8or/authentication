@@ -2,15 +2,14 @@ var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/users');  // "createConnection" instead of "connect" to connect to already open connection or connect to existing one
 
 var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
+db.on('error', console.error.bind(console, 'humm...connection error:'));
 
 
 var criptoModule = require('../cripto');
 
 
-
 //db.once('open', function (callback) {
-  // yay!
+
 		var usersSchema = mongoose.Schema({
 			username: String, 
 			password: {
@@ -69,6 +68,40 @@ var criptoModule = require('../cripto');
 		//   if (err) return console.error(err);
 		//   console.log(users)
 		// });
+
+		exports.checkConnection = function(cb){
+			// if not connected inform user and log...
+			var status = mongoose.connection.readyState;
+
+			if (status === 0){
+				mongoose.connect('mongodb://localhost/test', function (error) {
+					// Do things once connected here
+
+					//if error inform user...
+					if (error){
+						console.log('humm...connection error while trying to reconnect');
+
+						//DO SOMETHING HERE to index.js
+
+
+					}else{
+						// go ahead and do whatever you wanted...
+						cb();
+					}
+				});
+			}else{
+			// go ahead and do whatever you wanted...
+				cb();
+			}
+		}
+
+		// connection.readyState
+		//0 = disconnected
+		//1 = connected
+		//2 = connecting
+		//3 = disconnecting
+
+
 
 		//list all users
 		exports.getAllUsers = function (cb){
@@ -171,9 +204,12 @@ var criptoModule = require('../cripto');
 
 		//check user password to login
 		exports.loginUser = function (username, password, cb){
+
+			console.log('test '+mongoose.connection.readyState) //check if connection...
+
+
 			User.findOne({ username: username }, function (err, user) {
 				if (err) {
-					// TODO erro
 					console.log('error here man...');
 				}
 

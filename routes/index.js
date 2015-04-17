@@ -102,6 +102,11 @@ router.post('/register', function(req, res, next) {
 });
 
 
+//testing create connection
+router.get('/connect',function (req,res){
+  usersDB.checkConnection(function(){res.send('lol');});
+ 
+ });
 
 
 // Middleware to certify that the subsequent requests are authenthicated
