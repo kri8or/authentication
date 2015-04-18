@@ -5,7 +5,7 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'humm...connection error:'));
 
 
-var criptoModule = require('../cripto');
+var criptoModule = require('../Cripto');
 
 
 //db.once('open', function (callback) {
@@ -78,7 +78,7 @@ var criptoModule = require('../cripto');
 					// Do things once connected here
 					//if error inform user...
 					if (error){
-						console.log('humm...connection error while trying to reconnect');
+						console.log('cannot connect, is the DB server on ?!?');
 
 						//DO SOMETHING HERE to index.js
 						next(false); //false = not Connected
@@ -204,7 +204,7 @@ var criptoModule = require('../cripto');
 		//check user password to login
 		exports.loginUser = function (username, password, cb){
 
-			console.log('test '+mongoose.connection.readyState) //check if connection...
+			//console.log('connection status '+mongoose.connection.readyState) //check if connection...
 
 
 			User.findOne({ username: username }, function (err, user) {

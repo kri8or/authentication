@@ -40,6 +40,16 @@ router.use(function(req, res, next) {
 
 //--------------------
 
+//middleware to checkConnection do DB...
+function ensureConnection(req,res,next){
+  usersDB.checkConnection(function(connected){
+    if (connected) {
+      return next();
+    }else{
+      res.send('sorry dude, no connection do DB')
+    }
+  });
+}
 
 
 router.get('/', function (req, res) {
@@ -67,51 +77,48 @@ router.post('/login-default', passport.authenticate('local'), function (req, res
 //OVERRIDING THE DEFAULT STRATEGY
 //ALSO CHECK http://www.hacksparrow.com/express-js-custom-error-pages-404-and-500.html
 
-router.post('/login', function(req, res, next) {
-  passport.authenticate('local', function(err, user) {
-      if (err) { return next(err); }
-      if (!user) { return res.render('login',{'message':'Essas credenciais nao existem pah!','type':'danger'});}
+router.post('/login',ensureConnection, function(req, res, next) {
 
-      req.logIn(user, function(err) {
+      passport.authenticate('local', function(err, user) {
         if (err) {
-          console.log('erro aqui (router post login): '+err);
-          return next(err); }
-        return res.redirect('/');
-      });
+          return next(err);
+        }
+        if (!user){
+          return res.render('login',{'message':'Essas credenciais nao existem pah!','type':'danger'});
+        }
+        req.logIn(user, function(err) {
+          if (err) {
+            console.log('erro aqui (router post login): '+err);
+            return next(err); }
+          return res.redirect('/');
+        });
+      })(req, res, next);
 
-  })(req, res, next);
-});
+  });
+
 
 
 // REgISTER
 
-router.post('/register', function(req, res, next) {
-  usersDB.findOrCreate(req.body.username, req.body.password, function(result){ //res true - success; false - already exists
-    var message = "",type = "";
+router.post('/register',ensureConnection, function(req, res) {
 
-    if (result){
-      message ='user creado com sucesso';
-      type='success';}
-    else{
-      message= 'user ja existe';
-      type='danger';
-    }
+      usersDB.findOrCreate(req.body.username, req.body.password, function(result){
+      //res true - success; false - already exists
+        var message = "",type = "";
 
-    return res.render('login',{'message': message, 'type':type});
-  });
+        if (result){
+          message ='user creado com sucesso';
+          type='success';}
+        else{
+          message= 'user ja existe';
+          type='danger';
+        }
+
+        return res.render('login',{'message': message, 'type':type});
+      });
 });
 
 
-// CHECK CONNECTION testing create connection
-router.get('/connect',function (req,res){
-  usersDB.checkConnection(function(connected){
-    if (connected){
-      res.send('congrats');
-    }else{
-      res.send('error - not connected ... try again later');
-    }
-  });
- });
 
 
 // Middleware to certify that the subsequent requests are authenthicated
@@ -138,18 +145,24 @@ function ensureAuthenticated(req, res, next) {
   res.redirect('/login')
 }
 
+
 //subsequent request
 router.get('/martins',ensureAuthenticated, function (req,res){
-  res.send('...yes the greatest');
+  res.send('...yes the greatest'); //will appear in case user is logged in
 });
 
 //subsequent request
-router.get('/account',ensureAuthenticated, function (req,res){
+router.get('/account',ensureConnection,ensureAuthenticated, function (req,res){
   res.render('account',{
     user: req.user
   });
 });
 
+//Logout
+router.get('/logout', function (req,res){
+  req.logout();
+  res.redirect('/');
+});
 
 
 //---------------another way to define the router (more clean)------------------------
@@ -163,18 +176,30 @@ router.route('/tone')
   .post(function (req,res){
   res.send('test');
 });
+
+
+/// This is just a test route create connection
+
+router.get('/connect',function (req,res){
+  usersDB.checkConnection(function(connected){
+    if (connected){
+      res.send('congrats');
+    }else{
+      res.send('error - not connected ... try again later');
+    }
+  });
+});
+
 //----------------------------------------
 
 
 
-router.get('/logout', function (req,res){
-	req.logout();
-	res.redirect('/');
-});
 
 router.get('/test',function (req,res){
   res.render('test');
 });
+
+
 
 
 module.exports = router;
