@@ -69,29 +69,28 @@ var criptoModule = require('../cripto');
 		//   console.log(users)
 		// });
 
-		exports.checkConnection = function(cb){
+		exports.checkConnection = function(next){
 			// if not connected inform user and log...
 			var status = mongoose.connection.readyState;
 
 			if (status === 0){
 				mongoose.connect('mongodb://localhost/test', function (error) {
 					// Do things once connected here
-
 					//if error inform user...
 					if (error){
 						console.log('humm...connection error while trying to reconnect');
 
 						//DO SOMETHING HERE to index.js
-
+						next(false); //false = not Connected
 
 					}else{
 						// go ahead and do whatever you wanted...
-						cb();
+						next(true); //true = connected
 					}
 				});
 			}else{
 			// go ahead and do whatever you wanted...
-				cb();
+				next(true); //true = connected
 			}
 		}
 

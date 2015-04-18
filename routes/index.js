@@ -102,10 +102,15 @@ router.post('/register', function(req, res, next) {
 });
 
 
-//testing create connection
+// CHECK CONNECTION testing create connection
 router.get('/connect',function (req,res){
-  usersDB.checkConnection(function(){res.send('lol');});
- 
+  usersDB.checkConnection(function(connected){
+    if (connected){
+      res.send('congrats');
+    }else{
+      res.send('error - not connected ... try again later');
+    }
+  });
  });
 
 
