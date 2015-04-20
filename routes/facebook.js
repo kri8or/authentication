@@ -32,13 +32,24 @@ fbRouter.get('/auth',
 
 
 
-fbRouter.get('/', function (req, res) {
-  res.render('index', {
-  	isAuthenticated: req.isAuthenticated(), //passport adds this for us (express doesnt have)
-  	user: userTest
-  });
+
+// Handle ERROR 404 - ATENCAO neste momento n?o esta a funcar...meter dentro dos routes...
+// se meter dentro de / of /fb da erro 404
+fbRouter.use(function(req, res, next) {
+  res.status(404).render('404');
 });
 
+
+// Handle ERROR 500
+fbRouter.use(function(err, req, res, next){
+  // we may use properties of the error object
+  // here and next(err) appropriately, or if
+  // we possibly recovered from the error, simply next().
+  res.render('500', {
+    status: err.status || 500
+    , error: err
+  });
+});
 
 
 module.exports = fbRouter;

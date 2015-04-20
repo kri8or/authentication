@@ -1,0 +1,9 @@
+extends wraper
+block titulo
+    | 500 Server Error
+block content
+    if (!isLogged)
+        h3 Error #{status}
+        p #{error}
+        br
+        a(href="javascript:history.back()") Go Back

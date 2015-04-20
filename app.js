@@ -23,6 +23,7 @@ var app = express();
 var usersDB = require('./modules/DB');
 
 
+
 //Serialize and Deserialize users
 // ==============================================
 
@@ -97,6 +98,9 @@ function(accessToken, refreshToken, profile, done) {
 }));
 
 
+
+
+
 // ROUTES
 // ==============================================
 //	a inicialização do passport tem que estar antes das rotas que usam passport (senao erro)
@@ -114,9 +118,12 @@ app.use('/', routes);
 
 // Handle ERROR 404 - ATENCAO neste momento não esta a funcar...meter dentro dos routes...
 // se meter dentro de / of /fb da erro 404
-app.use(function(req, res, next) {
-	res.status(404).render('404');
-});
+//app.use(function(req, res, next) {
+//	res.status(404).render('404');
+//});
+
+
+
 
 //Start Server
 // ==============================================
