@@ -2,9 +2,10 @@ var express = require('express');
 var passport = require('passport');
 var router = express.Router();
 var passportLocal = require('passport-local');
+var bearerStrategy = require('passport-http-bearer');
 var usersDB = require('../modules/DB');
 
-
+//LOCAL STRATEGY
 passport.use(new passportLocal.Strategy(function(username, password, done){ //done is a callback
   usersDB.loginUser(username,password,function(resUser){
     done(null, resUser);
@@ -12,6 +13,18 @@ passport.use(new passportLocal.Strategy(function(username, password, done){ //do
 }));
 
 
+
+//TOKEN BEARER STRATEGY
+// Use the BearerStrategy within Passport.
+//   Strategies in Passport require a `validate` function, which accept
+//   credentials (in this case, a token), and invoke a callback with a user
+//   object.
+passport.use(new bearerStrategy.Strategy({
+    },
+    function(token, done) {
+      // asynchronous validation, for effect...
+    }
+));
 
 
 
@@ -65,6 +78,15 @@ function ensureAuthenticated(req, res, next) {
 
 
 //-------------------
+
+// curl -v http://127.0.0.1:3000/?access_token=123456789
+router.get('/bearer',
+    // Authenticate using HTTP Bearer credentials, with session support disabled.
+    passport.authenticate('bearer', { session: false }),
+    function(req, res){
+      res.json({ username: req.user.username });
+    });
+
 
 
 

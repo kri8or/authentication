@@ -40,7 +40,8 @@ mixin loginForm(estrategia)
 		h2.form-signin-heading Sign in here
 		input(type="text" name="username" id="inputEmail" class="form-control" placeholder="username")
 		input(type="password" name="password" id="inputPassword" class="form-control" placeholder="password")
-		button(type="submit" form="login").btn.btn-lg.btn-primary.btn-block Sign in
+		button(type="submit" form="login").btn.btn-lg.btn-info.btn-block Sign in
+		a(href="/bearer").btn.btn-lg.btn.btn-lg.btn-warning.btn-block Sign in Bearer
 		a(href="/fb/facebook").btn.btn-lg.btn-primary.btn-block Sign in with Facebook
 		br
 	form(id="register" method="post" action="/register").form-signin
