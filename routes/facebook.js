@@ -1,12 +1,41 @@
 var express = require('express');
 var passport = require('passport');
+var passportFB = require('passport-facebook').Strategy;
 var fbRouter = express.Router();
 
 // routes defined after fb/
-
-
-
 var usersDB = require('../modules/DB');
+
+// Passport FACEBOOK
+// ==============================================
+// In order to use Facebook authentication, you must first create an app at https://developers.facebook.com/.
+// When created, an app is assigned an App ID and App Secret. Your application must also implement a redirect URL,
+// to which Facebook will redirect users after they have approved access for your application.
+
+var FACEBOOK_APP_ID = 343195729218869;
+var FACEBOOK_APP_SECRET = 'd6e3830c44a08bc8b57032048d94dd65';
+
+
+
+passport.use(new passportFB({
+      clientID: FACEBOOK_APP_ID,
+      clientSecret: FACEBOOK_APP_SECRET,
+      callbackURL: "https://quemsou.eu/fb/auth/"
+    },
+    function(accessToken, refreshToken, profile, done) {
+
+      //check (accessToken, refreshToken)
+
+      usersDB.findOrCreateWithFB(
+          profile.id,
+          profile.displayName,
+          profile.emails,
+          function(resUser){
+            done(null,resUser);
+          });
+      // profile properties http://passportjs.org/guide/profile/
+    }));
+
 
 
 //middleware to checkConnection do DB...

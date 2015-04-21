@@ -6,23 +6,10 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var expressSession = require('express-session');
 var passport = require('passport');
-var passportLocal = require('passport-local');
-var passportHttp = require('passport-http');
-var passportFB = require('passport-facebook').Strategy;
+//var passportHttp = require('passport-http');
+
 
 var app = express();
-
-//a FAKE BD:
-// ==============================================
-
-//var usersDB = require('./modules/user');
-
-//a REAL BD:
-// ==============================================
-
-var usersDB = require('./modules/DB');
-
-
 
 //Serialize and Deserialize users
 // ==============================================
@@ -43,6 +30,7 @@ passport.deserializeUser(function(obj, done) {
 });
 
 
+
 // View Engine and Express Session and Cookie configuration
 // ==============================================
 app.set('view engine', 'jade');
@@ -56,50 +44,12 @@ app.use(expressSession({
 })); 
 
 
+
 // Passport local
 // ==============================================
 
 app.use(passport.initialize());
 app.use(passport.session());
-
-
-passport.use(new passportLocal.Strategy(function(username, password, done){ //done is a callback
-	usersDB.loginUser(username,password,function(resUser){
-		done(null, resUser);
-	}); //null = insucesso
-}));
-
-
-// Passport FACEBOOK
-// ==============================================
-// In order to use Facebook authentication, you must first create an app at https://developers.facebook.com/. 
-// When created, an app is assigned an App ID and App Secret. Your application must also implement a redirect URL, 
-// to which Facebook will redirect users after they have approved access for your application.
-
-var FACEBOOK_APP_ID = 343195729218869;
-var FACEBOOK_APP_SECRET = 'd6e3830c44a08bc8b57032048d94dd65';
-
-passport.use(new passportFB({
-	clientID: FACEBOOK_APP_ID,
-	clientSecret: FACEBOOK_APP_SECRET,
-	callbackURL: "https://quemsou.eu/fb/auth/"
-},
-function(accessToken, refreshToken, profile, done) {
-
-	//check (accessToken, refreshToken)
-
-  	usersDB.findOrCreateWithFB(
-  		profile.id,
-  		profile.displayName,
-  		profile.emails,
-  		function(resUser){
-   		done(null,resUser);
-  	});
-	// profile properties http://passportjs.org/guide/profile/
-}));
-
-
-
 
 
 // ROUTES
@@ -122,7 +72,6 @@ app.use('/', routes);
 //app.use(function(req, res, next) {
 //	res.status(404).render('404');
 //});
-
 
 
 

@@ -1,8 +1,17 @@
 var express = require('express');
 var passport = require('passport');
 var router = express.Router();
-
+var passportLocal = require('passport-local');
 var usersDB = require('../modules/DB');
+
+
+passport.use(new passportLocal.Strategy(function(username, password, done){ //done is a callback
+  usersDB.loginUser(username,password,function(resUser){
+    done(null, resUser);
+  }); //null = insucesso
+}));
+
+
 
 
 
@@ -140,7 +149,7 @@ router.get('/logout', function (req,res){
 //test
 //router.use(cookieParser);
 router.get('/cookie',function (req,res){
-  res.cookie('test', 'aa');
+  res.cookie('test', ['aa','bb']);
   res.render('test');
 
 });
