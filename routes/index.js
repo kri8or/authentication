@@ -2,7 +2,6 @@ var express = require('express');
 var passport = require('passport');
 var router = express.Router();
 
-
 var usersDB = require('../modules/DB');
 
 
@@ -138,6 +137,23 @@ router.get('/logout', function (req,res){
   res.redirect('/');
 });
 
+//test
+//router.use(cookieParser);
+router.get('/cookie',function (req,res){
+  res.cookie('test', 'aa');
+  res.render('test');
+
+});
+
+//test
+
+router.get('/cres',function (req,res){
+  console.log("Cookies: ", req.cookies);
+  res.render('index', {title: 'test lol'});
+
+});
+
+
 
 // Handle ERROR 404 - ATENCAO neste momento não esta a funcar...meter dentro dos routes...
 // se meter dentro de / of /fb da erro 404
@@ -198,9 +214,7 @@ router.get('/connect',function (req,res){
 
 //----------------------------------------
 
-router.get('/test',function (req,res){
-  res.render('test');
-});
+
 
 
 module.exports = router;

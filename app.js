@@ -48,7 +48,8 @@ passport.deserializeUser(function(obj, done) {
 app.set('view engine', 'jade');
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(cookieParser());
-app.use(expressSession({ 
+app.use(expressSession({
+	//cookie: {maxAge: 20000}, //20 seconds
 	secret: process.env.SESSION_SECRET || 'This is the secret', //secret to digitally sign the cookie
 	resave: false,  
 	saveUninitialized: false
