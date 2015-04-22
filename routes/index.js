@@ -23,6 +23,11 @@ passport.use(new bearerStrategy.Strategy({
     },
     function(token, done) {
       // asynchronous validation, for effect...
+      console.log('bearer: '+token); //parameter  ?access_token=teste
+      usersDB.loginUser('teste','teste',function(resUser){
+            done(null, resUser);
+      });
+
     }
 ));
 
@@ -85,6 +90,7 @@ router.get('/bearer',
     passport.authenticate('bearer', { session: false }),
     function(req, res){
       res.json({ username: req.user.username });
+      //res.redirect('/login')
     });
 
 
@@ -165,6 +171,8 @@ router.get('/account',ensureConnection,ensureAuthenticated, function (req,res){
 //Logout
 router.get('/logout', function (req,res){
   req.logout();
+  req.session.destroy();
+  res.clearCookie('connect.sid')
   res.redirect('/');
 });
 
